@@ -15,10 +15,10 @@ There will be a second prompt asking for the quantity you want to buy.
 
 If there is enough quantity in stock, your purchase will be successful and you will be shown the total price of your transaction
 
-![purchased](images/purchased.PNG)
+![purchased](images/purchased.png)
 
 Otherwise, if there is not enough items in stock, a message will notify you to try again.
 
-![outofstock](images/notenough.PNG)
+![outofstock](images/notenough.png)
 
 Both responses will prompt you to choose something else to buy.
