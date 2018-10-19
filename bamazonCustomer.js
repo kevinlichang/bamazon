@@ -1,6 +1,8 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql");
 
+const Table = require('easy-table')
+
 
 
 const db = mysql.createConnection({
@@ -20,7 +22,23 @@ db.connect(err => {
 const readProducts = () => {
   db.query("SELECT * FROM products", (err, items) => {
     if (err) throw err;
-    console.log(items);
+
+    
+    var t = new Table;
+    items.forEach(function (product) {
+      t.cell('Product Id', product.item_id)
+      t.cell('Product Name', product.product_name)
+      t.cell('Department Name', product.department_name)
+      t.cell('Price', product.price, Table.number(2))
+      t.cell('Quantity in Stock', product.stock_quantity)
+      t.newRow()
+    })
+    
+    console.log(`
+==========================================================================
+                              Our Products
+==========================================================================
+${t.toString()}`);
     chooseProduct();
   });
 
@@ -31,9 +49,8 @@ const chooseProduct = () => {
   db.query("SELECT * FROM products", (err, items) => {
     if (err) throw err;
 
-    inquirer.prompt([
-      {
-        name: "itemID",
+    inquirer.prompt([{
+        name: "ID",
         message: "Which item would you like to buy (enter item ID)?",
         type: "input",
         default: 1
@@ -42,10 +59,18 @@ const chooseProduct = () => {
         name: "quantity",
         message: "How many do you want to buy?",
         type: "input",
-        default: 1
+        default: 1,
+        validate: value => {
+          if (!isNaN(value)) {
+            return true;
+          } else {
+            return false;
+          }
+        }
       }
     ]).then(productInfo => {
-      const selectedItem = items.find(item => item.item_id === productInfo.itemID);
+      
+      const selectedItem = items.find(item => {return item.item_id === parseFloat(productInfo.ID)});
 
       if (productInfo.quantity > selectedItem.stock_quantity) {
         console.log("Insufficient quantity. Try choosing again!");
@@ -53,18 +78,18 @@ const chooseProduct = () => {
       } else {
         let newQuantity = selectedItem.stock_quantity - productInfo.quantity;
         let totalCost = selectedItem.price * productInfo.quantity;
-        console.log(`Purchase successful! Total cost: ${totalCost}`);
+        console.log(`Purchase successful! Total cost: $${totalCost}`);
         purchasedItem(selectedItem.item_id, newQuantity);
       };
 
-    })
+    });
   });
 };
 
+
 // use to check the quantity of an item
 const purchasedItem = (itemId, quantity) => {
-  db.query("UPDATE products SET ? WHERE ?", [
-    {
+  db.query("UPDATE products SET ? WHERE ?", [{
       stock_quantity: parseFloat(quantity)
     },
     {
@@ -72,7 +97,11 @@ const purchasedItem = (itemId, quantity) => {
     }
   ], (err, res) => {
     if (err) throw err;
-    console.log("Buy something else!")
-    chooseProduct();
+    console.log(`
+    ============================================
+    Thanks for your purchase
+    Please buy something else!
+    ============================================`)
+    readProducts();
   })
 }
