@@ -2,4 +2,4 @@
 
 Welcome to Bamazon. Here you can purchase products from a list of items we have in stock. Upon opening, a list will be displayed for the products we have currently.
 
-![test.md](/images/start.png)
+![start](images/start.PNG)
