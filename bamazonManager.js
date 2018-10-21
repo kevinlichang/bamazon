@@ -158,12 +158,12 @@ const addNewProduct = () => {
   inquirer.prompt([
     {
       name: "itemName",
-      message: "Enter name of new product",
+      message: "Enter name of new product:",
       type: "input"
     },
     {
       name: "department",
-      message: "Enter the department the product falls under",
+      message: "Enter the department the product falls under:",
       type: "input",
       default: "general"
     },
@@ -182,7 +182,7 @@ const addNewProduct = () => {
     },
     {
       name: "quantity",
-      message: "Enter quantity in stock of the new product",
+      message: "Enter quantity in stock of the new product:",
       type: "input",
       validate: function (value) {
         if (!isNaN(value)) {
@@ -201,7 +201,11 @@ const addNewProduct = () => {
       stock_quantity: newItemInfo.quantity
     }, (err, res) => {
       if (err) throw err;
-      console.log (`New Product Added`);
+      console.log(`
+==========================================================================
+                        New Product added
+                                
+==========================================================================`);
       startPrompt();
     });
   });
