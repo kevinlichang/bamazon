@@ -49,11 +49,19 @@ const chooseProduct = () => {
   db.query("SELECT * FROM products", (err, items) => {
     if (err) throw err;
 
-    inquirer.prompt([{
+    inquirer.prompt([
+      {
         name: "ID",
         message: "Which item would you like to buy (enter item ID)?",
         type: "input",
-        default: 1
+        default: 1,
+        validate: value => {
+          if (!isNaN(value)) {
+            return true;
+          } else {
+            return false;
+          }
+        }
       },
       {
         name: "quantity",
